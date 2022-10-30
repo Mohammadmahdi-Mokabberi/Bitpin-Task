@@ -111,6 +111,7 @@ class ArticleListAPIView(generics.ListAPIView):
             user = request.user
             qs = Article.objects.all()
             data = {}
+            pointer = 1
             for article in qs:
                 article_data ={
                     'title' : article.title,
@@ -122,7 +123,8 @@ class ArticleListAPIView(generics.ListAPIView):
                 if UserScores.objects.filter(article=article, user=user).exists():
                     record = UserScores.objects.get(article=article, user=user)
                     article_data['user_score'] = record.score
-                data.update(article_data)
+                data[str(pointer)] = article_data
+                pointer+=1
             return response_data(status_code=1, data=data)
         except:
             return response_data(status_code=0, message='server error')
